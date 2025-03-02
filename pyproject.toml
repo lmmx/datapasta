@@ -22,15 +22,15 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python",
 ]
-name = "datapasta"
-version = "0.1.0"
-description = "Paste data as Python DataFrame definitions"
-readme = "README.md"
-license = {text = "MIT"}
-requires-python = ">=3.10"
 dependencies = [
     "pyperclip",
 ]
+description = "Paste data as Python DataFrame definitions"
+license = {text = "MIT"}
+name = "datapasta"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.1.0"
 
 [project.optional-dependencies]
 dev = [
@@ -56,13 +56,12 @@ polars-lts-cpu = [
     "polars-lts-cpu>=1.21.0",
 ]
 
-
-[project.urls]
-Homepage = "https://github.com/lmmx/datapasta"
-"Bug Tracker" = "https://github.com/lmmx/datapasta/issues"
-
 [project.scripts]
 datapasta = "datapasta.cli:main"
+
+[project.urls]
+"Bug Tracker" = "https://github.com/lmmx/datapasta/issues"
+Homepage = "https://github.com/lmmx/datapasta"
 
 [tool.ruff.lint]
 ignore = [
@@ -81,7 +80,6 @@ select = [
     "UP",
     "W",
 ]
-
 
 [tool.tomlsort]
 all = true
