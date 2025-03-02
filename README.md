@@ -1,5 +1,11 @@
 # datapasta
 
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm.fming.dev)
+[![PyPI](https://img.shields.io/pypi/v/datapasta.svg)](https://pypi.org/project/datapasta)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/datapasta.svg)](https://pypi.org/project/datapasta)
+[![License](https://img.shields.io/pypi/l/datapasta.svg)](https://pypi.python.org/pypi/datapasta)
+
 A Python package inspired by the R `datapasta` package for pasting tabular data into DataFrame code. datapasta analyzes clipboard content or text input and generates Python code to recreate the data as a pandas or polars DataFrame.
 
 ## Features
@@ -14,21 +20,18 @@ A Python package inspired by the R `datapasta` package for pasting tabular data 
 ## Installation
 
 ```bash
-# Clone the repository 
-git clone https://github.com/lmmx/datapasta
-cd datapasta
-
-# Install with PDM (recommended)
-pdm install
-
-# Or with pip
-pip install .
+# Install with pip
+pip install datapasta
 
 # With polars support
-pdm install -G polars
-# or
-pip install ".[polars]"
+pip install datapasta[polars]
+
+# For older CPUs
+pip install datapasta[polars-lts-cpu]
 ```
+
+> The `polars` dependency is not included in the package by default.
+> It is shipped as an optional extra which can be activated by passing it in square brackets.
 
 ## Usage
 
@@ -129,6 +132,24 @@ datapasta works by:
 4. Inferring column types (int, float, boolean, datetime, string)
 5. Generating code to create a pandas or polars DataFrame
 
+## Project Structure
+
+- `clipboard.py`: Functions for reading from the system clipboard
+- `parser.py`: Functions for parsing text data, detecting delimiters, and headers
+- `type_inference.py`: Functions for inferring column data types
+- `formatter.py`: Functions for generating pandas and polars code
+- `main.py`: Main entry points and CLI functionality
+
+## Contributing
+
+Contributions welcome!
+
+1. **Issues & Discussions**: Please open a GitHub issue or discussion for bugs, feature requests, or questions.
+2. **Pull Requests**: PRs are welcome!
+   - Install the dev extra with `pip install -e ".[dev]"`
+   - Run tests with `pytest`
+   - Include updates to docs or examples if relevant
+
 ## Requirements
 
 - Python 3.10+
@@ -136,7 +157,7 @@ datapasta works by:
 
 ## License
 
-MIT
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Credits
 
