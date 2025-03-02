@@ -74,6 +74,43 @@ pandas_code = datapasta.text_to_pandas(csv_text)
 print(pandas_code)
 ```
 
+## Controlling Header Detection
+
+datapasta attempts to automatically detect whether your data has a header row, but you can override this behavior when needed:
+
+### Command Line
+
+```bash
+# Auto-detect headers (default behavior)
+datapasta --file data.csv
+
+# Force using the first row as a header
+datapasta --file data.csv --header yes
+
+# Force no header (generate column names like col1, col2, etc.)
+datapasta --file data.csv --header no
+```
+
+### Python API
+
+```python
+import datapasta
+
+# Auto-detect headers (default)
+code = datapasta.text_to_pandas(text)
+
+# Force using the first row as a header
+code = datapasta.text_to_pandas(text, has_header=True)
+
+# Force no header
+code = datapasta.text_to_pandas(text, has_header=False)
+```
+
+This is particularly useful when:
+- The auto-detection logic misidentifies numeric headers as data
+- You want to preserve the first row as data but datapasta treats it as a header
+- You need consistent column names (col1, col2, etc.) for multiple similar datasets
+
 ## Examples
 
 ### From a CSV in the clipboard
