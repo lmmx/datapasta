@@ -1,6 +1,6 @@
-# PyPasta
+# datapasta
 
-A Python package inspired by the R `datapasta` package for pasting tabular data into DataFrame code. PyPasta analyzes clipboard content or text input and generates Python code to recreate the data as a pandas or polars DataFrame.
+A Python package inspired by the R `datapasta` package for pasting tabular data into DataFrame code. datapasta analyzes clipboard content or text input and generates Python code to recreate the data as a pandas or polars DataFrame.
 
 ## Features
 
@@ -14,9 +14,9 @@ A Python package inspired by the R `datapasta` package for pasting tabular data 
 ## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/lmmx/pypasta
-cd pypasta
+# Clone the repository 
+git clone https://github.com/lmmx/datapasta
+cd datapasta
 
 # Install with PDM (recommended)
 pdm install
@@ -36,29 +36,29 @@ pip install ".[polars]"
 
 ```bash
 # Read from clipboard, generate pandas code
-pypasta > dataframe_code.py
+datapasta > dataframe_code.py
 
 # Read from clipboard, generate polars code
-pypasta --polars > dataframe_code.py
+datapasta --polars > dataframe_code.py
 
 # Read from file instead of clipboard
-pypasta --file data.csv > dataframe_code.py
+datapasta --file data.csv > dataframe_code.py
 
 # Specify a separator (otherwise auto-detected)
-pypasta --sep "," > dataframe_code.py
+datapasta --sep "," > dataframe_code.py
 ```
 
 ### Python API
 
 ```python
-import pypasta
+import datapasta
 
 # Read from clipboard and get pandas code
-pandas_code = pypasta.clipboard_to_pandas()
+pandas_code = datapasta.clipboard_to_pandas()
 print(pandas_code)
 
 # Read from clipboard and get polars code
-polars_code = pypasta.clipboard_to_polars()
+polars_code = datapasta.clipboard_to_polars()
 print(polars_code)
 
 # Convert text directly to DataFrame code
@@ -67,7 +67,7 @@ Alice,25,New York
 Bob,30,San Francisco
 Charlie,35,Seattle"""
 
-pandas_code = pypasta.text_to_pandas(csv_text)
+pandas_code = datapasta.text_to_pandas(csv_text)
 print(pandas_code)
 ```
 
@@ -81,7 +81,7 @@ Bob,30,San Francisco
 Charlie,35,Seattle
 ```
 
-PyPasta will generate:
+datapasta will generate:
 
 ```python
 import pandas as pd
@@ -101,15 +101,15 @@ Bob	30	San Francisco
 Charlie	35	Seattle
 ```
 
-PyPasta will generate similar code, automatically detecting the tab delimiter.
+datapasta will generate similar code, automatically detecting the tab delimiter.
 
 ### Using in a Jupyter notebook
 
 ```python
-import pypasta
+import datapasta
 
 # Assuming you've copied data to clipboard
-code = pypasta.clipboard_to_pandas()
+code = datapasta.clipboard_to_pandas()
 print("Generated code:")
 print(code)
 
@@ -121,7 +121,7 @@ display(df)
 
 ## How It Works
 
-PyPasta works by:
+datapasta works by:
 
 1. Reading text from the clipboard or a file
 2. Intelligently guessing the delimiter/separator
@@ -131,7 +131,7 @@ PyPasta works by:
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.10+
 - pyperclip (for clipboard access)
 
 ## License
