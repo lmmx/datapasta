@@ -14,7 +14,7 @@ A Python package inspired by the R `datapasta` package for pasting tabular data 
 ## Installation
 
 ```bash
-# Clone the repository 
+# Clone the repository
 git clone https://github.com/lmmx/pypasta
 cd pypasta
 

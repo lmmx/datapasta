@@ -1,6 +1,5 @@
 """Test code generation functionality."""
 
-import pytest
 from datapasta.formatter import format_value, generate_pandas_code, generate_polars_code
 
 
@@ -53,13 +52,13 @@ def test_generate_pandas_code():
         "headers": ["name", "age", "active"],
         "data": [
             ["Alice", "25", "true"],
-            ["Bob", "30", "false"]
-        ]
+            ["Bob", "30", "false"],
+        ],
     }
     types = ["str", "int", "bool"]
-    
+
     code = generate_pandas_code(parsed_table, types)
-    
+
     assert "import pandas as pd" in code
     assert "df = pd.DataFrame({" in code
     assert "'name': ['Alice', 'Bob']," in code
@@ -71,12 +70,12 @@ def test_generate_pandas_code_empty():
     """Test generating pandas DataFrame code for empty data."""
     parsed_table = {
         "headers": [],
-        "data": []
+        "data": [],
     }
     types = []
-    
+
     code = generate_pandas_code(parsed_table, types)
-    
+
     assert code == "import pandas as pd\ndf = pd.DataFrame()"
 
 
@@ -86,13 +85,13 @@ def test_generate_polars_code():
         "headers": ["name", "age", "active"],
         "data": [
             ["Alice", "25", "true"],
-            ["Bob", "30", "false"]
-        ]
+            ["Bob", "30", "false"],
+        ],
     }
     types = ["str", "int", "bool"]
-    
+
     code = generate_polars_code(parsed_table, types)
-    
+
     assert "import polars as pl" in code
     assert "df = pl.DataFrame({" in code
     assert "'name': ['Alice', 'Bob']," in code
@@ -104,10 +103,10 @@ def test_generate_polars_code_empty():
     """Test generating polars DataFrame code for empty data."""
     parsed_table = {
         "headers": [],
-        "data": []
+        "data": [],
     }
     types = []
-    
+
     code = generate_polars_code(parsed_table, types)
-    
+
     assert code == "import polars as pl\ndf = pl.DataFrame()"

@@ -72,5 +72,5 @@ print(pandas_code)
 
 # Example 8: Using with specific separator
 print("\n=== Example 8: Forcing a specific separator ===")
-pandas_code = datapasta.text_to_pandas(pipe_data, separator='|')
+pandas_code = datapasta.text_to_pandas(pipe_data, separator="|")
 print(pandas_code)

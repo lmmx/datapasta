@@ -1,6 +1,5 @@
 """Test type inference functionality."""
 
-import pytest
 from datapasta.type_inference import infer_type, infer_types_for_table
 
 
@@ -59,10 +58,10 @@ def test_infer_types_for_table():
         "data": [
             ["Alice", "25", "true", "2023-01-15", "First entry"],
             ["Bob", "30", "false", "2023-02-20", "Second entry"],
-            ["Charlie", "35", "true", "2023-03-05", "Third entry"]
-        ]
+            ["Charlie", "35", "true", "2023-03-05", "Third entry"],
+        ],
     }
-    
+
     types = infer_types_for_table(parsed_table)
     assert types == ["str", "int", "bool", "datetime", "str"]
 
@@ -71,8 +70,8 @@ def test_infer_types_for_empty_table():
     """Test inferring types for an empty table."""
     parsed_table = {
         "headers": ["name", "age", "active"],
-        "data": []
+        "data": [],
     }
-    
+
     types = infer_types_for_table(parsed_table)
     assert types == ["str", "str", "str"]

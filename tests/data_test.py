@@ -85,7 +85,7 @@ def test_parse_table_empty():
 def test_parse_table_max_rows():
     """Test max rows limit."""
     # Create text with 10 rows
-    text = "\n".join([f"{i},{i+1},{i+2}" for i in range(10)])
+    text = "\n".join([f"{i},{i + 1},{i + 2}" for i in range(10)])
 
     # Parse with max_rows=5
     result = parse_table(text, max_rows=5)

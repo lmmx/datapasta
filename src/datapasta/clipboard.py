@@ -1,20 +1,20 @@
 """Clipboard interaction functionality."""
 
-from typing import Optional
-
 
 def read_clipboard() -> str:
     """Read text from system clipboard.
-    
+
     Returns:
         The text content from the clipboard
-        
+
     Raises:
         ImportError: If pyperclip is not installed
         RuntimeError: If clipboard access fails
+
     """
     try:
         import pyperclip
+
         return pyperclip.paste()
     except ImportError:
         raise ImportError("Please install pyperclip: pip install pyperclip")
