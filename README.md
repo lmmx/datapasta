@@ -5,6 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/datapasta.svg)](https://pypi.org/project/datapasta)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/datapasta.svg)](https://pypi.org/project/datapasta)
 [![License](https://img.shields.io/pypi/l/datapasta.svg)](https://pypi.python.org/pypi/datapasta)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/lmmx/octopolars/master.svg)](https://results.pre-commit.ci/latest/github/lmmx/octopolars/master)
 
 A Python package inspired by the R `datapasta` package for pasting tabular data into DataFrame code. datapasta analyzes clipboard content or text input and generates Python code to recreate the data as a pandas or polars DataFrame.
 
