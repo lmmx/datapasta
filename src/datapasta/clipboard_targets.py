@@ -1,7 +1,5 @@
 """Integration with cliptargets for enhanced clipboard access."""
 
-import re
-
 from .clipboard import read_clipboard
 from .formatter import generate_pandas_code, generate_polars_code
 from .html_parser import html_to_parsed_table
@@ -38,73 +36,95 @@ def is_tabular_text(text: str) -> bool:
     return min(col_counts) == max(col_counts) and min(col_counts) > 1
 
 
-def extract_table_from_github_artifacts_text(text: str) -> dict:
-    r"""Extract a table from GitHub artifacts plain text.
+def parse_multiline_table(text: str) -> dict | None:
+    """Parse tables where rows are split across multiple lines.
 
-    The GitHub artifacts plain text usually has a structure like:
-    "Name \tSize \t\nartifact1\n\tsize1 \t\nartifact2\n\tsize2 \t\n..."
+    Handles cases where a logical row spans multiple physical lines,
+    typically with the first line containing the first column value
+    and subsequent indented/tab-prefixed lines containing other column values.
 
     Args:
-        text: The plain text from clipboard
+        text: The text to parse
 
     Returns:
-        Dictionary with parsed table data
+        Dictionary with parsed table data or None if not a multi-line format
 
     """
-    # First check if it looks like GitHub artifacts format
-    if not (
-        "Name" in text
-        and "\tSize" in text
-        and any(name in text for name in ["wheels-", "artifact-", ".zip", ".tar.gz"])
-    ):
+    lines = split_lines(text)
+    lines = [line for line in lines if line.strip() or line.startswith("\t")]
+
+    if len(lines) < 3:  # Need header + at least one full row (2 lines)
         return None
 
-    # Extract data in a more structured way
-    lines = re.split(r"\r?\n", text)
-    if not lines:
+    # Detect alternating non-tab and tab-prefixed lines pattern
+    has_multiline_format = False
+    tab_pattern = []
+
+    for i in range(1, min(7, len(lines))):  # Check first few lines
+        tab_pattern.append(lines[i].startswith("\t"))
+
+    if len(tab_pattern) >= 2:
+        alternating = True
+        for i in range(len(tab_pattern) - 1):
+            if tab_pattern[i] == tab_pattern[i + 1]:
+                alternating = False
+                break
+        has_multiline_format = (
+            alternating and not tab_pattern[0]
+        )  # First data line shouldn't be tab-prefixed
+
+    if not has_multiline_format:
         return None
 
-    # First line should contain headers
-    headers = [h.strip() for h in lines[0].split("\t") if h.strip()]
-    if not headers or "Name" not in headers:
+    # Parse the header from the first line
+    header_line = lines[0]
+    headers = [h.strip() for h in header_line.split("\t") if h.strip()]
+
+    if not headers:
         return None
 
-    # Process the data rows, handling the special format
+    # Process the data rows (each logical row spans multiple physical lines)
     data = []
-    name = None
-    row_data = []
+    i = 1
 
-    for line in lines[1:]:
-        line = line.strip()
-        if not line:
-            continue
+    while i < len(lines):
+        # Look for a pair of lines: non-tab line followed by tab line
+        if (
+            i + 1 < len(lines)
+            and not lines[i].startswith("\t")
+            and lines[i + 1].startswith("\t")
+        ):
+            # First line has the first column value
+            main_value = lines[i].strip()
 
-        # If the line starts with a tab, it's a continuation of the previous row
-        if line.startswith("\t"):
-            values = [v.strip() for v in line.split("\t")]
-            if values and name:
-                row_data = [name] + values
-                data.append(row_data)
-                name = None
-                row_data = []
+            # Second line has remaining column values (remove leading tab)
+            tab_line = lines[i + 1].lstrip("\t")
+            tab_values = [v.strip() for v in tab_line.split("\t")]
+
+            # Combine into a single row
+            row = [main_value] + tab_values
+
+            # Ensure row has correct number of columns
+            if len(row) < len(headers):
+                row.extend([""] * (len(headers) - len(row)))
+            elif len(row) > len(headers):
+                row = row[: len(headers)]
+
+            data.append(row)
+            i += 2  # Skip to next row pair
         else:
-            # This is a new name
-            name = line.strip()
+            i += 1  # Skip malformed lines
 
-    # Make sure all data rows have the right number of columns
-    header_count = len(headers)
-    for i in range(len(data)):
-        if len(data[i]) < header_count:
-            data[i] = data[i] + [""] * (header_count - len(data[i]))
-        elif len(data[i]) > header_count:
-            data[i] = data[i][:header_count]
+    # Only return if we parsed some data
+    if data:
+        return {
+            "headers": headers,
+            "data": data,
+            "separator": "\t",
+            "has_header": True,  # This format always has headers
+        }
 
-    return {
-        "headers": headers,
-        "data": data,
-        "separator": "\t",
-        "has_header": True,
-    }
+    return None
 
 
 def clipboard_with_targets_to_parsed_table(
@@ -113,9 +133,6 @@ def clipboard_with_targets_to_parsed_table(
     has_header: bool | None = None,
 ) -> dict:
     """Read clipboard content using cliptargets and parse it into a table structure.
-
-    For GitHub artifacts and similar tab-separated tables, prioritizes the plain text
-    version which is often more reliable. Falls back to HTML parsing for other cases.
 
     Args:
         separator: Optional separator (if None, will be guessed)
@@ -136,16 +153,18 @@ def clipboard_with_targets_to_parsed_table(
         text_targets = ["text/plain", "UTF8_STRING", "STRING"]
         for target in text_targets:
             text = all_targets.get(target)
-            if text and is_tabular_text(text):
-                # Special handling for GitHub artifacts format
-                github_table = extract_table_from_github_artifacts_text(text)
-                if github_table:
-                    # Override has_header if explicitly set
-                    if has_header is not None:
-                        github_table["has_header"] = has_header
-                    return github_table
+            if not text:
+                continue
 
-                # Regular tab-separated table
+            # First try multi-line table format
+            multiline_table = parse_multiline_table(text)
+            if multiline_table:
+                if has_header is not None:
+                    multiline_table["has_header"] = has_header
+                return multiline_table
+
+            # Then try standard table format
+            if is_tabular_text(text):
                 return parse_table(
                     text,
                     sep=separator,

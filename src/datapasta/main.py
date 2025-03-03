@@ -167,9 +167,6 @@ def main() -> None:
                     has_header=has_header,
                 )
         else:
-            # Clipboard input
-            print("Reading from clipboard...", file=sys.stderr)
-
             # Determine which clipboard access method to use
             if args.legacy:
                 # Legacy clipboard access

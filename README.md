@@ -31,6 +31,35 @@ code = datapasta.clipboard_with_targets_to_pandas()
 print(code)
 ```
 
+### GitHub Artifacts example
+
+If you go to the GitHub Actions results summary page you see a HTML table.
+datapasta will generate the DataFrame code for you from the clipboard :magic_wand:
+
+```
+(datapasta) louis 🚶 ~/dev/datapasta $ datapasta --polars
+import polars as pl
+
+df = pl.DataFrame({
+    'Name': ['wheels-linux-aarch64', 'wheels-linux-armv7', 'wheels-linux-ppc64le',
+'wheels-linux-s390x'],
+    'Size': ['4.2 MB', '3.78 MB', '4.63 MB', '5.5 MB'],
+})
+(datapasta) louis 🚶 ~/dev/datapasta $ python -ic "$(datapasta --polars)"
+>>> print(df)
+shape: (4, 2)
+┌──────────────────────┬─────────┐
+│ Name                 ┆ Size    │
+│ ---                  ┆ ---     │
+│ str                  ┆ str     │
+╞══════════════════════╪═════════╡
+│ wheels-linux-aarch64 ┆ 4.2 MB  │
+│ wheels-linux-armv7   ┆ 3.78 MB │
+│ wheels-linux-ppc64le ┆ 4.63 MB │
+│ wheels-linux-s390x   ┆ 5.5 MB  │
+└──────────────────────┴─────────┘
+```
+
 ## Command Line Usage
 
 ```bash

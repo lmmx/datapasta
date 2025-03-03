@@ -1,13 +1,13 @@
-"""Test parsing GitHub artifacts tables."""
+"""Test parsing multiline tables."""
 
 import json
 import os
 
-from datapasta.clipboard_targets import extract_table_from_github_artifacts_text
+from datapasta.clipboard_targets import parse_multiline_table
 
 
-def test_extract_table_from_github_artifacts_text():
-    """Test extraction of table from GitHub artifacts plain text format."""
+def test_parse_multiline_table():
+    """Test extraction of tables with multiline row format."""
     # Load the test data
     test_dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(test_dir, "fixtures", "github_artifacts.json")) as f:
@@ -16,7 +16,7 @@ def test_extract_table_from_github_artifacts_text():
 
     assert text_content, "Test text content should not be empty"
 
-    parsed = extract_table_from_github_artifacts_text(text_content)
+    parsed = parse_multiline_table(text_content)
 
     # Validate the parsed table
     assert parsed is not None, "Should return a parsed table"
@@ -29,27 +29,33 @@ def test_extract_table_from_github_artifacts_text():
     # Check data content
     assert len(parsed["data"]) >= 3, "Should extract multiple rows"
 
-    # Check for specific artifacts
+    # Check for specific row contents (using the same test data)
     artifact_names = [row[0] for row in parsed["data"]]
-    assert "wheels-linux-aarch64" in artifact_names, "Should extract aarch64 artifact"
-    assert "wheels-linux-armv7" in artifact_names, "Should extract armv7 artifact"
-    assert "wheels-linux-ppc64le" in artifact_names, "Should extract ppc64le artifact"
+    assert "wheels-linux-aarch64" in artifact_names, (
+        "Should extract first column value correctly"
+    )
+    assert "wheels-linux-armv7" in artifact_names, (
+        "Should extract first column value correctly"
+    )
+    assert "wheels-linux-ppc64le" in artifact_names, (
+        "Should extract first column value correctly"
+    )
 
-    # Check for specific sizes
+    # Check for specific values in the second column
     size_by_artifact = {row[0]: row[1] for row in parsed["data"]}
     assert "4.2 MB" in size_by_artifact["wheels-linux-aarch64"], (
-        "Should have correct size for aarch64"
+        "Should extract second column value correctly"
     )
     assert "3.78 MB" in size_by_artifact["wheels-linux-armv7"], (
-        "Should have correct size for armv7"
+        "Should extract second column value correctly"
     )
     assert "4.63 MB" in size_by_artifact["wheels-linux-ppc64le"], (
-        "Should have correct size for ppc64le"
+        "Should extract second column value correctly"
     )
 
 
-def test_full_github_artifacts_workflow():
-    """Test the full workflow for GitHub artifacts using clipboard targets data."""
+def test_full_multiline_table_workflow():
+    """Test the full workflow for multiline tables using clipboard targets data."""
     from datapasta.clipboard_targets import clipboard_with_targets_to_parsed_table
 
     # Mock the cliptargets module
@@ -84,13 +90,21 @@ def test_full_github_artifacts_workflow():
         assert "Name" in parsed["headers"], "Should include 'Name' in headers"
         assert "Size" in parsed["headers"], "Should include 'Size' in headers"
 
-        # Check for specific artifacts
+        # Check for specific data content
         artifact_names = [row[0] for row in parsed["data"]]
-        assert len(artifact_names) >= 3, "Should extract multiple artifacts"
+        assert len(artifact_names) >= 3, "Should extract multiple rows"
         assert "wheels-linux-aarch64" in artifact_names, (
-            "Should extract aarch64 artifact"
+            "Should extract first column value correctly"
         )
-        assert "wheels-linux-armv7" in artifact_names, "Should extract armv7 artifact"
+        assert "wheels-linux-armv7" in artifact_names, (
+            "Should extract first column value correctly"
+        )
+
+        # Check if we have the correct number of columns (should be exactly 2: Name and Size)
+        assert len(parsed["headers"]) == 2, "Should extract exactly 2 columns"
+        assert all(len(row) == 2 for row in parsed["data"]), (
+            "All rows should have exactly 2 values"
+        )
 
     finally:
         # Restore the original import function
