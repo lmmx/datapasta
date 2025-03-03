@@ -140,6 +140,12 @@ def main() -> None:
         action="store_true",
         help="Use legacy clipboard access (don't use cliptargets)",
     )
+    parser.add_argument(
+        "--repr",
+        "-r",
+        action="store_true",
+        help="Execute the code and print the DataFrame repr",
+    )
 
     args = parser.parse_args()
 
@@ -219,7 +225,10 @@ def main() -> None:
                             has_header=has_header,
                         )
 
-        print(code)
+        if args.repr:
+            exec(code + "\nprint(df)")
+        else:
+            print(code)
 
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)

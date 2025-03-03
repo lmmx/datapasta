@@ -37,6 +37,28 @@ pip install datapasta[polars-lts-cpu]
 > The `polars` dependency is not included in the package by default.
 > It is shipped as an optional extra which can be activated by passing it in square brackets.
 
+## Command Line Usage
+
+```
+usage: datapasta [-h] [--file FILE] [--sep SEP] [--max-rows MAX_ROWS]
+                 [--polars] [--header {auto,yes,no}] [--legacy] [--repr]
+
+Convert clipboard or text to DataFrame code
+
+options:
+  -h, --help            show this help message and exit
+  --file FILE, -f FILE  Input file (if not using clipboard)
+  --sep SEP, -s SEP     Separator (default: auto-detect)
+  --max-rows MAX_ROWS, -m MAX_ROWS
+                        Max rows to parse
+  --polars, -p          Generate polars code (default: pandas)
+  --header {auto,yes,no}
+                        Header detection: 'auto' to detect automatically,
+                        'yes' to force header, 'no' to force no header
+  --legacy              Use legacy clipboard access (don't use cliptargets)
+  --repr, -r            Execute the code and print the DataFrame repr
+```
+
 ### GitHub Artifacts example
 
 If you go to the GitHub Actions results summary page you see a HTML table.
@@ -66,14 +88,27 @@ shape: (4, 2)
 └──────────────────────┴─────────┘
 ```
 
-## Command Line Usage
+If that's all you want, run:
 
-```bash
-# Automatically uses HTML table content if available
-datapasta
+```sh
+datapasta --polars --repr
+```
 
-# Force using legacy clipboard access (no HTML support)
-datapasta --legacy
+This will automatically execute the code and print out the result (you must have the relevant
+library installed of course!)
+
+```
+shape: (4, 2)
+┌──────────────────────┬─────────┐
+│ Name                 ┆ Size    │
+│ ---                  ┆ ---     │
+│ str                  ┆ str     │
+╞══════════════════════╪═════════╡
+│ wheels-linux-aarch64 ┆ 4.2 MB  │
+│ wheels-linux-armv7   ┆ 3.78 MB │
+│ wheels-linux-ppc64le ┆ 4.63 MB │
+│ wheels-linux-s390x   ┆ 5.5 MB  │
+└──────────────────────┴─────────┘
 ```
 
 ## How It Works
