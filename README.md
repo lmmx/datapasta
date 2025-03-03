@@ -23,10 +23,13 @@ A Python package inspired by the R `datapasta` package for pasting tabular data 
 # Install with pip
 pip install datapasta
 
-# With polars support
+# With Pandas support
+pip install datapasta[pandas]
+
+# With Polars support
 pip install datapasta[polars]
 
-# For older CPUs
+# For Polars on older CPUs
 pip install datapasta[polars-lts-cpu]
 ```
 

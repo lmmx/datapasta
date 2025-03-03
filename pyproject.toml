@@ -55,6 +55,9 @@ polars = [
 polars-lts-cpu = [
     "polars-lts-cpu>=1.21.0",
 ]
+pandas = [
+    "pandas>=2.2.3",
+]
 
 [project.scripts]
 datapasta = "datapasta.main:main"
