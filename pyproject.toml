@@ -24,7 +24,6 @@ classifiers = [
 ]
 dependencies = [
     "cliptargets>=0.1.2",
-    "pyperclip",
 ]
 description = "Paste data as Python DataFrame definitions"
 name = "datapasta"
@@ -51,6 +50,9 @@ docs = [
     "mkdocstrings[python]>=0.24.0",
     "ruff>=0.9.5",
     "urllib3<2",
+]
+pyperclip = [
+    "pyperclip",
 ]
 pandas = [
     "pandas>=2.2.3",

@@ -23,6 +23,12 @@ pip install datapasta
     uv add datapasta
     ```
 
+If you use Windows/MacOS (or a non-X11 clipboard on Linux) you will need the pyperclip extra when installing:
+
+```sh
+pip install datapasta[pyperclip]
+```
+
 ## 2. Usage
 
 `datapasta` provides a CLI tool called `datapasta`. To convert clipboard table data to Python code:

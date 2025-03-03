@@ -24,6 +24,9 @@ A Python package inspired by the R `datapasta` package for pasting tabular data 
 # Install with pip
 pip install datapasta
 
+# With Pyperclip support (for Windows/MacOS, or if you are on Linux but not using X windows manager)
+pip install datapasta[pyperclip]
+
 # With Pandas support
 pip install datapasta[pandas]
 
@@ -298,7 +301,7 @@ Contributions welcome!
 ## Requirements
 
 - Python 3.10+
-- pyperclip (for clipboard access)
+- **either** cliptargets (Linux X11) or pyperclip (Windows, Mac, non-X11 Linux)
 
 ## License
 
