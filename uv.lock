@@ -269,6 +269,15 @@ wheels = [
 ]
 
 [[package]]
+name = "cliptargets"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/8f/ad2135158af26b2d1f41b79c67caf3d5877ac3a2e9445601965c33b8c3a8/cliptargets-0.1.2.tar.gz", hash = "sha256:09dacbe66948f609a7887dfb1074ba91a9a27a902051c73416f69d240bde90c1", size = 10965 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/6b/e7795bb7e888dbc46d1266e4b5042b2af41deed23c446fa5478cd79548a9/cliptargets-0.1.2-py3-none-any.whl", hash = "sha256:f5e52ef90e26131417e656fe948dbcca7ea6abe4a0d6f036891cf770467afca9", size = 7612 },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -298,9 +307,10 @@ wheels = [
 
 [[package]]
 name = "datapasta"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
+    { name = "cliptargets" },
     { name = "pyperclip" },
 ]
 
@@ -333,6 +343,7 @@ polars-lts-cpu = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cliptargets", specifier = ">=0.1.2" },
     { name = "livereload", marker = "extra == 'docs'", specifier = ">=2.7.1" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.3" },
     { name = "mkdocs-extra-sass-mathshim", marker = "extra == 'docs'", specifier = ">=0.1.0" },

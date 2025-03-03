@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python",
 ]
 dependencies = [
+    "cliptargets>=0.1.2",
     "pyperclip",
 ]
 description = "Paste data as Python DataFrame definitions"

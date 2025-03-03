@@ -135,6 +135,11 @@ def main() -> None:
         default="auto",
         help="Header detection: 'auto' to detect automatically, 'yes' to force header, 'no' to force no header",
     )
+    parser.add_argument(
+        "--legacy",
+        action="store_true",
+        help="Use legacy clipboard access (don't use cliptargets)",
+    )
 
     args = parser.parse_args()
 
@@ -142,27 +147,81 @@ def main() -> None:
     has_header = None if args.header == "auto" else (args.header == "yes")
 
     try:
+        # File input takes precedence
         if args.file:
             with open(args.file, encoding="utf-8") as f:
                 text = f.read()
+
+            if args.polars:
+                code = text_to_polars(
+                    text,
+                    separator=args.sep,
+                    max_rows=args.max_rows,
+                    has_header=has_header,
+                )
+            else:
+                code = text_to_pandas(
+                    text,
+                    separator=args.sep,
+                    max_rows=args.max_rows,
+                    has_header=has_header,
+                )
         else:
-            text = read_clipboard()
+            # Clipboard input
             print("Reading from clipboard...", file=sys.stderr)
 
-        if args.polars:
-            code = text_to_polars(
-                text,
-                separator=args.sep,
-                max_rows=args.max_rows,
-                has_header=has_header,
-            )
-        else:
-            code = text_to_pandas(
-                text,
-                separator=args.sep,
-                max_rows=args.max_rows,
-                has_header=has_header,
-            )
+            # Determine which clipboard access method to use
+            if args.legacy:
+                # Legacy clipboard access
+                if args.polars:
+                    code = clipboard_to_polars(
+                        separator=args.sep,
+                        max_rows=args.max_rows,
+                        has_header=has_header,
+                    )
+                else:
+                    code = clipboard_to_pandas(
+                        separator=args.sep,
+                        max_rows=args.max_rows,
+                        has_header=has_header,
+                    )
+            else:
+                # Enhanced clipboard access with targets
+                try:
+                    from .clipboard_targets import (
+                        clipboard_with_targets_to_pandas,
+                        clipboard_with_targets_to_polars,
+                    )
+
+                    if args.polars:
+                        code = clipboard_with_targets_to_polars(
+                            separator=args.sep,
+                            max_rows=args.max_rows,
+                            has_header=has_header,
+                        )
+                    else:
+                        code = clipboard_with_targets_to_pandas(
+                            separator=args.sep,
+                            max_rows=args.max_rows,
+                            has_header=has_header,
+                        )
+                except ImportError as e:
+                    print(
+                        f"Warning: {e}. Falling back to legacy clipboard access.",
+                        file=sys.stderr,
+                    )
+                    if args.polars:
+                        code = clipboard_to_polars(
+                            separator=args.sep,
+                            max_rows=args.max_rows,
+                            has_header=has_header,
+                        )
+                    else:
+                        code = clipboard_to_pandas(
+                            separator=args.sep,
+                            max_rows=args.max_rows,
+                            has_header=has_header,
+                        )
 
         print(code)
 
