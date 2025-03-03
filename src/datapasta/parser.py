@@ -84,7 +84,7 @@ def split_lines(text: str) -> list[str]:
 def parse_table(
     text: str,
     sep: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> dict[str, Any]:
     """Parse text into rows and columns.

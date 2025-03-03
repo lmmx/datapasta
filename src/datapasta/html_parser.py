@@ -27,7 +27,7 @@ class HTMLTableParser(html.parser.HTMLParser):
         self.current_tags = []  # Track nested tags
         self.reset_cell_on_end = True  # Whether to reset cell content on cell end
 
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str]]):
         """Process HTML start tags to track table structure.
 
         This method updates the parser state when encountering opening tags for
@@ -70,7 +70,7 @@ class HTMLTableParser(html.parser.HTMLParser):
             self.in_cell = True
             self.current_cell = []
 
-    def handle_endtag(self, tag):
+    def handle_endtag(self, tag: str):
         """Process HTML end tags to finalize table elements.
 
         This method updates the parser state when encountering closing tags.
@@ -136,20 +136,6 @@ class HTMLTableParser(html.parser.HTMLParser):
             self.in_cell = False
             if self.reset_cell_on_end:
                 self.current_cell = []
-
-    def handle_data(self, data):
-        """Process text content within HTML elements.
-
-        Collects text data found inside table cells to be added to the
-        current cell's content when the cell is closed.
-
-        Args:
-            data: The text content
-
-        """
-        if self.in_cell:
-            # Accumulate text in the current cell
-            self.current_cell.append(data)
 
 
 def extract_tables_from_html(

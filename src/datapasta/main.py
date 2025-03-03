@@ -12,7 +12,7 @@ from .type_inference import infer_types_for_table
 def text_to_pandas(
     text: str,
     separator: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> str:
     """Convert text to pandas DataFrame creation code.
@@ -36,7 +36,7 @@ def text_to_pandas(
 def text_to_polars(
     text: str,
     separator: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> str:
     """Convert text to polars DataFrame creation code.
@@ -59,7 +59,7 @@ def text_to_polars(
 
 def clipboard_to_pandas(
     separator: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> str:
     """Read text from clipboard and convert to pandas DataFrame creation code.
@@ -85,7 +85,7 @@ def clipboard_to_pandas(
 
 def clipboard_to_polars(
     separator: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> str:
     """Read text from clipboard and convert to polars DataFrame creation code.
@@ -120,7 +120,7 @@ def main() -> None:
         "--max-rows",
         "-m",
         type=int,
-        default=200,
+        default=10_000,
         help="Max rows to parse",
     )
     parser.add_argument(
@@ -185,18 +185,17 @@ def main() -> None:
             else:
                 # Enhanced clipboard access with targets
                 try:
-                    from .clipboard_targets import (
-                        clipboard_with_targets_to_pandas,
-                        clipboard_with_targets_to_polars,
-                    )
-
                     if args.polars:
+                        from .clipboard_targets import clipboard_with_targets_to_polars
+
                         code = clipboard_with_targets_to_polars(
                             separator=args.sep,
                             max_rows=args.max_rows,
                             has_header=has_header,
                         )
                     else:
+                        from .clipboard_targets import clipboard_with_targets_to_pandas
+
                         code = clipboard_with_targets_to_pandas(
                             separator=args.sep,
                             max_rows=args.max_rows,

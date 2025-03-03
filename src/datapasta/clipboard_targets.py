@@ -129,7 +129,7 @@ def parse_multiline_table(text: str) -> dict | None:
 
 def clipboard_with_targets_to_parsed_table(
     separator: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> dict:
     """Read clipboard content using cliptargets and parse it into a table structure.
@@ -209,7 +209,7 @@ def clipboard_with_targets_to_parsed_table(
 
 def clipboard_with_targets_to_pandas(
     separator: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> str:
     """Read clipboard content using cliptargets and convert to pandas DataFrame code.
@@ -236,7 +236,7 @@ def clipboard_with_targets_to_pandas(
 
 def clipboard_with_targets_to_polars(
     separator: str | None = None,
-    max_rows: int = 200,
+    max_rows: int = 10_000,
     has_header: bool | None = None,
 ) -> str:
     """Read clipboard content using cliptargets and convert to polars DataFrame code.
