@@ -226,7 +226,15 @@ def main() -> None:
                         )
 
         if args.repr:
-            exec(code + "\nprint(df)")
+            if args.polars:
+                row_cfg = "cfg.set_tbl_rows(-1)"
+                col_cfg = "cfg.set_tbl_cols(-1)"
+                cfg = f"cfg=pl.Config()\n{row_cfg}\n{col_cfg}"
+            else:
+                row_cfg = "pd.set_option('display.max_rows', None)"
+                col_cfg = "pd.set_option('display.max_columns', None)"
+                cfg = f"{row_cfg}\n{col_cfg}"
+            exec(code + f"\n{cfg}\nprint(df)")
         else:
             print(code)
 

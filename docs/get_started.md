@@ -37,10 +37,10 @@ pip install datapasta[pyperclip]
 datapasta
 ```
 
-To generate polars code instead of pandas, add the `--polars` flag:
+To generate pandas code instead of polars, add the `--pandas` flag:
 
 ```bash
-datapasta --polars
+datapasta --pandas
 ```
 
 This will generate Polars DataFrame code for the table data in your clipboard.
@@ -103,17 +103,17 @@ For advanced usage like limiting rows, see the [CLI reference](index.md).
 
 2. **Generate the DataFrame code**:
    ```bash
-   datapasta --polars > table_code.py
+   datapasta > table_code.py
    ```
 
 3. **Use the generated code in your project**:
-   ```bash
-   python -ic "$(cat table_code.py)"
+   ```py
+   import table_code
    ```
 
 4. **Work with the data programmatically**:
    ```bash
-   datapasta --polars | python -c "exec(open(0).read()); print(df.filter(pl.col('Size').str.contains('MB')).head(2))"
+   datapasta | python -c "exec(open(0).read()); print(df.filter(pl.col('Size').str.contains('MB')).head(2))"
    ```
    This pipes the generated code directly to Python and filters rows containing "MB".
 
@@ -123,6 +123,7 @@ For advanced usage like limiting rows, see the [CLI reference](index.md).
 - **Clipboard access**: Works with system clipboard (handled by pyperclip)
 - **HTML parsing**: Automatically extracts tables from HTML content when available
 - **CLI Flags**: Control parsing, output format, and header detection:
+  - `--pandas`: Generate pandas code instead of Polars
   - `--max-rows`: Limit maximum rows to parse (default: 10,000)
   - `--header`: Control header detection (`auto`, `yes`, `no`)
   - `--sep`: Specify delimiter/separator (auto-detected by default)

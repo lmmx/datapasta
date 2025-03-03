@@ -5,16 +5,16 @@
 [![PyPI](https://img.shields.io/pypi/v/datapasta.svg)](https://pypi.org/project/datapasta)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/datapasta.svg)](https://pypi.org/project/datapasta)
 [![License](https://img.shields.io/pypi/l/datapasta.svg)](https://pypi.python.org/pypi/datapasta)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/lmmx/octopolars/master.svg)](https://results.pre-commit.ci/latest/github/lmmx/octopolars/master)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/lmmx/datapasta/master.svg)](https://results.pre-commit.ci/latest/github/lmmx/datapasta/master)
 
-A Python package inspired by the R `datapasta` package for pasting tabular data into DataFrame code. datapasta analyzes clipboard content or text input and generates Python code to recreate the data as a pandas or polars DataFrame.
+A Python package inspired by the R `datapasta` package for pasting tabular data into DataFrame code. datapasta analyzes clipboard content or text input and generates Python code to recreate the data as a pandas or pandas DataFrame.
 
 ## Features
 
 - Automatic detection of delimiters (comma, tab, pipe, semicolon, etc.)
 - Smart header detection
 - Type inference for columns (int, float, boolean, datetime, string)
-- Generates code for both pandas and polars DataFrames
+- Generates code for both pandas and pandas DataFrames
 - Command-line interface for easy integration with text editors
 - Simple API for programmatic use
 
@@ -27,13 +27,12 @@ pip install datapasta
 # With Pyperclip support (for Windows/MacOS, or if you are on Linux but not using X windows manager)
 pip install datapasta[pyperclip]
 
-# With Pandas support
+# With Pandas execution support
 pip install datapasta[pandas]
 
-# With Polars support
+# With Polars execution support
 pip install datapasta[polars]
-
-# For Polars on older CPUs
+# or for Polars on older CPUs
 pip install datapasta[polars-lts-cpu]
 ```
 
@@ -45,7 +44,7 @@ pip install datapasta[polars-lts-cpu]
 
 ```
 usage: datapasta [-h] [--file FILE] [--sep SEP] [--max-rows MAX_ROWS]
-                 [--polars] [--header {auto,yes,no}] [--legacy] [--repr]
+                 [--pandas] [--header {auto,yes,no}] [--legacy] [--repr]
 
 Convert clipboard or text to DataFrame code
 
@@ -55,7 +54,7 @@ options:
   --sep SEP, -s SEP     Separator (default: auto-detect)
   --max-rows MAX_ROWS, -m MAX_ROWS
                         Max rows to parse
-  --polars, -p          Generate polars code (default: pandas)
+  --pandas, -p          Generate pandas code (default: polars)
   --header {auto,yes,no}
                         Header detection: 'auto' to detect automatically,
                         'yes' to force header, 'no' to force no header
@@ -69,7 +68,7 @@ If you go to the GitHub Actions results summary page you see a HTML table.
 datapasta will generate the DataFrame code for you from the clipboard :magic_wand:
 
 ```
-(datapasta) louis 🚶 ~/dev/datapasta $ datapasta --polars
+(datapasta) louis 🚶 ~/dev/datapasta $ datapasta
 import polars as pl
 
 df = pl.DataFrame({
@@ -77,7 +76,7 @@ df = pl.DataFrame({
 'wheels-linux-s390x'],
     'Size': ['4.2 MB', '3.78 MB', '4.63 MB', '5.5 MB'],
 })
-(datapasta) louis 🚶 ~/dev/datapasta $ python -ic "$(datapasta --polars)"
+(datapasta) louis 🚶 ~/dev/datapasta $ python -ic "$(datapasta)"
 >>> print(df)
 shape: (4, 2)
 ┌──────────────────────┬─────────┐
@@ -95,11 +94,10 @@ shape: (4, 2)
 If that's all you want, run:
 
 ```sh
-datapasta --polars --repr
+datapasta --repr
 ```
 
-This will automatically execute the code and print out the result (you must have the DataFrame
-library installed!)
+This will automatically execute the code and print out the result (you must have Polars installed!)
 
 ```
 shape: (4, 2)
@@ -139,7 +137,7 @@ Note:
 datapasta > dataframe_code.py
 
 # Read from clipboard, generate polars code
-datapasta --polars > dataframe_code.py
+datapasta > dataframe_code.py
 
 # Read from file instead of clipboard
 datapasta --file data.csv > dataframe_code.py
@@ -153,13 +151,13 @@ datapasta --sep "," > dataframe_code.py
 ```python
 import datapasta
 
-# Read from clipboard and get pandas code
-pandas_code = datapasta.clipboard_to_pandas()
-print(pandas_code)
-
 # Read from clipboard and get polars code
 polars_code = datapasta.clipboard_to_polars()
 print(polars_code)
+
+# Read from clipboard and get pandas code
+pandas_code = datapasta.clipboard_to_pandas()
+print(pandas_code)
 
 # Convert text directly to DataFrame code
 csv_text = """name,age,city
@@ -167,8 +165,8 @@ Alice,25,New York
 Bob,30,San Francisco
 Charlie,35,Seattle"""
 
-pandas_code = datapasta.text_to_pandas(csv_text)
-print(pandas_code)
+polars_code = datapasta.text_to_polars(csv_text)
+print(polars_code)
 ```
 
 ## Controlling Header Detection
@@ -194,13 +192,13 @@ datapasta --file data.csv --header no
 import datapasta
 
 # Auto-detect headers (default)
-code = datapasta.text_to_pandas(text)
+code = datapasta.text_to_polars(text)
 
 # Force using the first row as a header
-code = datapasta.text_to_pandas(text, has_header=True)
+code = datapasta.text_to_polars(text, has_header=True)
 
 # Force no header
-code = datapasta.text_to_pandas(text, has_header=False)
+code = datapasta.text_to_polars(text, has_header=False)
 ```
 
 This is particularly useful when:
@@ -218,7 +216,7 @@ This is especially useful when copying tables from web pages, spreadsheets, or o
 import datapasta
 
 # Will automatically use HTML table content if available
-code = datapasta.clipboard_with_targets_to_pandas()
+code = datapasta.clipboard_with_targets_to_polars()
 print(code)
 ```
 
@@ -235,9 +233,9 @@ Charlie,35,Seattle
 datapasta will generate:
 
 ```python
-import pandas as pd
+import polars as pl
 
-df = pd.DataFrame({
+df = pl.DataFrame({
     "name": ["Alice", "Bob", "Charlie"],
     "age": [25, 30, 35],
     "city": ["New York", "San Francisco", "Seattle"],
@@ -260,7 +258,7 @@ datapasta will generate similar code, automatically detecting the tab delimiter.
 import datapasta
 
 # Assuming you've copied data to clipboard
-code = datapasta.clipboard_to_pandas()
+code = datapasta.clipboard_to_polars()
 print("Generated code:")
 print(code)
 
@@ -278,14 +276,14 @@ datapasta works by:
 2. Intelligently guessing the delimiter/separator
 3. Detecting if there's a header row
 4. Inferring column types (int, float, boolean, datetime, string)
-5. Generating code to create a pandas or polars DataFrame
+5. Generating code to create a pandas or pandas DataFrame
 
 ## Project Structure
 
 - `clipboard.py`: Functions for reading from the system clipboard
 - `parser.py`: Functions for parsing text data, detecting delimiters, and headers
 - `type_inference.py`: Functions for inferring column data types
-- `formatter.py`: Functions for generating pandas and polars code
+- `formatter.py`: Functions for generating pandas and pandas code
 - `main.py`: Main entry points and CLI functionality
 
 ## Contributing
