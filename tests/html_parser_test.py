@@ -1,4 +1,5 @@
 """Test HTML parsing functionality."""
+
 import pytest
 
 from datapasta.html_parser import extract_tables_from_html, html_to_parsed_table
