@@ -124,10 +124,10 @@ def main() -> None:
         help="Max rows to parse",
     )
     parser.add_argument(
-        "--polars",
+        "--pandas",
         "-p",
         action="store_true",
-        help="Generate polars code (default: pandas)",
+        help="Generate pandas code (default: polars)",
     )
     parser.add_argument(
         "--header",
@@ -158,15 +158,15 @@ def main() -> None:
             with open(args.file, encoding="utf-8") as f:
                 text = f.read()
 
-            if args.polars:
-                code = text_to_polars(
+            if args.pandas:
+                code = text_to_pandas(
                     text,
                     separator=args.sep,
                     max_rows=args.max_rows,
                     has_header=has_header,
                 )
             else:
-                code = text_to_pandas(
+                code = text_to_polars(
                     text,
                     separator=args.sep,
                     max_rows=args.max_rows,
@@ -176,14 +176,14 @@ def main() -> None:
             # Determine which clipboard access method to use
             if args.legacy:
                 # Legacy clipboard access
-                if args.polars:
-                    code = clipboard_to_polars(
+                if args.pandas:
+                    code = clipboard_to_pandas(
                         separator=args.sep,
                         max_rows=args.max_rows,
                         has_header=has_header,
                     )
                 else:
-                    code = clipboard_to_pandas(
+                    code = clipboard_to_polars(
                         separator=args.sep,
                         max_rows=args.max_rows,
                         has_header=has_header,
@@ -191,18 +191,18 @@ def main() -> None:
             else:
                 # Enhanced clipboard access with targets
                 try:
-                    if args.polars:
-                        from .clipboard_targets import clipboard_with_targets_to_polars
+                    if args.pandas:
+                        from .clipboard_targets import clipboard_with_targets_to_pandas
 
-                        code = clipboard_with_targets_to_polars(
+                        code = clipboard_with_targets_to_pandas(
                             separator=args.sep,
                             max_rows=args.max_rows,
                             has_header=has_header,
                         )
                     else:
-                        from .clipboard_targets import clipboard_with_targets_to_pandas
+                        from .clipboard_targets import clipboard_with_targets_to_polars
 
-                        code = clipboard_with_targets_to_pandas(
+                        code = clipboard_with_targets_to_polars(
                             separator=args.sep,
                             max_rows=args.max_rows,
                             has_header=has_header,
@@ -212,28 +212,28 @@ def main() -> None:
                         f"Warning: {e}. Falling back to legacy clipboard access.",
                         file=sys.stderr,
                     )
-                    if args.polars:
-                        code = clipboard_to_polars(
+                    if args.pandas:
+                        code = clipboard_to_pandas(
                             separator=args.sep,
                             max_rows=args.max_rows,
                             has_header=has_header,
                         )
                     else:
-                        code = clipboard_to_pandas(
+                        code = clipboard_to_polars(
                             separator=args.sep,
                             max_rows=args.max_rows,
                             has_header=has_header,
                         )
 
         if args.repr:
-            if args.polars:
-                row_cfg = "cfg.set_tbl_rows(-1)"
-                col_cfg = "cfg.set_tbl_cols(-1)"
-                cfg = f"cfg=pl.Config()\n{row_cfg}\n{col_cfg}"
-            else:
+            if args.pandas:
                 row_cfg = "pd.set_option('display.max_rows', None)"
                 col_cfg = "pd.set_option('display.max_columns', None)"
                 cfg = f"{row_cfg}\n{col_cfg}"
+            else:
+                row_cfg = "cfg.set_tbl_rows(-1)"
+                col_cfg = "cfg.set_tbl_cols(-1)"
+                cfg = f"cfg=pl.Config()\n{row_cfg}\n{col_cfg}"
             exec(code + f"\n{cfg}\nprint(df)")
         else:
             print(code)
