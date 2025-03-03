@@ -95,8 +95,8 @@ If that's all you want, run:
 datapasta --polars --repr
 ```
 
-This will automatically execute the code and print out the result (you must have the relevant
-library installed of course!)
+This will automatically execute the code and print out the result (you must have the DataFrame
+library installed!)
 
 ```
 shape: (4, 2)
