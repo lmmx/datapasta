@@ -49,14 +49,14 @@ docs = [
     "ruff>=0.9.5",
     "urllib3<2",
 ]
+pandas = [
+    "pandas>=2.2.3",
+]
 polars = [
     "polars>=1.21.0",
 ]
 polars-lts-cpu = [
     "polars-lts-cpu>=1.21.0",
-]
-pandas = [
-    "pandas>=2.2.3",
 ]
 
 [project.scripts]
