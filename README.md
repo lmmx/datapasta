@@ -34,8 +34,9 @@ pip install datapasta[polars]
 pip install datapasta[polars-lts-cpu]
 ```
 
-> The `polars` dependency is not included in the package by default.
-> It is shipped as an optional extra which can be activated by passing it in square brackets.
+> The `pandas` and `polars`/`polars-lts-cpu` dependencies are not included in the package by default,
+> as typically you don't need to actually execute any code in those libraries. If you use the
+> `--repr` CLI flag you do, hence the extras are provided for convenience.
 
 ## Command Line Usage
 
