@@ -202,6 +202,7 @@ code = datapasta.text_to_polars(text, has_header=False)
 ```
 
 This is particularly useful when:
+
 - The auto-detection logic misidentifies numeric headers as data
 - You want to preserve the first row as data but datapasta treats it as a header
 - You need consistent column names (col1, col2, etc.) for multiple similar datasets
