@@ -235,11 +235,13 @@ datapasta will generate:
 ```python
 import polars as pl
 
-df = pl.DataFrame({
-    "name": ["Alice", "Bob", "Charlie"],
-    "age": [25, 30, 35],
-    "city": ["New York", "San Francisco", "Seattle"],
-})
+df = pl.DataFrame(
+    {
+        "name": ["Alice", "Bob", "Charlie"],
+        "age": [25, 30, 35],
+        "city": ["New York", "San Francisco", "Seattle"],
+    }
+)
 ```
 
 ### From a TSV in the clipboard
